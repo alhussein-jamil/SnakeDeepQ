@@ -1,23 +1,23 @@
-buffer_size : 100000
-batch_size : 3000
-max_steps: 50000
-simulation_freq: 5
+buffer_size : 1000000
+mini_batch_size : 100
+batch_size: 1000
+simulation_freq: 25
 gamma : 0.99
 epsilon : 1.0
 epsilon_min : 0.01
-epsilon_decay : 0.97
+epsilon_decay : 0.998
 train_epochs : 10
 
 env:
     render_mode : rgb_array
-    screen_width : 200
-    screen_height : 200
+    screen_width : 400
+    screen_height : 400
     block_size : 20
-    max_hunger_coef : 1
+    max_hunger_coef : 1.0
     max_steps_coef: 30
 actor_config: 
-    lr: 0.0001
+    lr: 0.001
     loss: MSE
-    layer1: 128
-    layer2: 128
+    layer1: 2048
+    layer2: 1024
     gamma: 0.99

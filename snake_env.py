@@ -43,17 +43,14 @@ class SnakeEnv(gym.Env):
 
     def compute_reward(self, action):
         rewards = {
-            "apple": 1.0 if self.snake.head == self.apple.position else 0.0,
-            "death": -1.0 if self.snake.head in self.snake.body[:-1] or not self.in_grid_bounds(self.snake.head) else 0.0,
-            "getting_closer": 0.5 if self.latest_distance  < self.normalized_distance(self.snake.head, self.apple.position) else -1.0,
+            "apple": 1 if self.snake.head == self.apple.position else 0,
+            "death": 0 if self.snake.head in self.snake.body[:-1] or not self.in_grid_bounds(self.snake.head) else 1,
+            "getting_closer": 1.0 if self.latest_distance  < self.normalized_distance(self.snake.head, self.apple.position) else 0,
             "normalized_distance": self.normalized_distance(self.snake.head, self.apple.position)
         }
-        self.reward = (rewards["apple"] + rewards["getting_closer"] + rewards["normalized_distance"] + rewards["death"]) / len(rewards)
-        # self.latest_distance = self.normalized_distance(self.snake.head, self.apple.position)
-        # self.reward =( rewards["getting closer"] + rewards["apple"] + rewards["death"] ) / len(rewards)
-        # self.reward = np.clip(self.reward,0,1)
-
-
+        self.reward = (rewards["apple"] + rewards["getting_closer"] * rewards["normalized_distance"] + rewards["death"] )
+        self.latest_distance = self.normalized_distance(self.snake.head, self.apple.position)
+        
     def reset(self, iteration=0, seed=None, options=None):
         # This function resets the game state and returns the initial observation
         # of the game state.
@@ -72,6 +69,7 @@ class SnakeEnv(gym.Env):
         self.done = False
         self.reward = 0
         self.steps = 0
+        self.hunger = 0
         # Return the initial observation of the game state
         return self._get_obs(), {}
 
@@ -150,16 +148,6 @@ class SnakeEnv(gym.Env):
     def in_grid_bounds(self, pos):
         return 0 <= pos[0] < self.screen_width and 0 <= pos[1] < self.screen_height
     
-    # def _get_obs(self):
-    #     obs = np.zeros((self.screen_height//self.block_size, self.screen_width//self.block_size, 3), dtype=np.uint8)
-    #     obs[self.apple.position[1]//self.block_size, self.apple.position[0]//self.block_size, 0] = 1
-        
-    #     for pos in self.snake.body[:-1]:
-    #         if(self.in_grid_bounds(pos)):
-    #             obs[pos[1]//self.block_size, pos[0]//self.block_size, 1] = 1
-    #     if(self.in_grid_bounds(self.snake.head)):
-    #         obs[self.snake.head[1]//self.block_size, self.snake.head[0]//self.block_size, 2] = 1
-    #     return obs
     
 
     

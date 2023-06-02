@@ -3,16 +3,23 @@ import pygame
 import matplotlib.pyplot as plt
 import torch 
 import mediapy as media
-config = yaml.load(open('SnakeDeepQ.yaml', 'r'), Loader=yaml.FullLoader)
+
 from snake_env import SnakeEnv
 from deepQ import Agent
 
+
+config = yaml.load(open('SnakeDeepQ.yaml', 'r'), Loader=yaml.FullLoader)
 snakie = SnakeEnv(config["env"])
 agent = Agent(snakie.observation_space, snakie.action_space, config)
 run = 0
 simulation_freq = config["simulation_freq"]
-max_steps = config["max_steps"]
-batch_size = config["batch_size"]
+max_steps = config["batch_size"]
+batch_size = config["mini_batch_size"]
+
+
+
+
+
 while True:
     #collect experience : 
 
@@ -49,10 +56,13 @@ while True:
     if run % simulation_freq == 0 and config["env"]["render_mode"] != "human":
         if(len(frames) > 0):
             media.write_video(f"./sims/run_{run}.mp4", frames, fps=10)
+            print(f"Saved video to ./sims/run_{run}.mp4")
         else:
             print("no frames to write")
     run += 1
 
     # train the agent
     loss= agent.train(batch_size)
-    print("total reward : ", total_reward/max_steps,"epsilon : ", agent.epsilon , "loss : ", loss)
+    print("Run : ", run , "total reward : ", total_reward/max_steps," epsilon : ", agent.epsilon , "loss : ", loss)
+
+    

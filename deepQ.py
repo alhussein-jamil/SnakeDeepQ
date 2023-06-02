@@ -37,11 +37,11 @@ class Q_Network(nn.Module):
     def build_model(self):
         model = nn.Sequential(
             nn.Linear(self.state_dim, self.config['layer1']),
-            nn.ReLU(),
+            nn.SiLU(),
             nn.Linear(self.config['layer1'], self.config['layer2']),
-            nn.ReLU(),
+            nn.SiLU(),
             nn.Linear(self.config['layer2'], self.action_dim),
-            nn.Tanh()
+            nn.Linear()
         )
         return model
     
